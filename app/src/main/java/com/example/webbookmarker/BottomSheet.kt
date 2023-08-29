@@ -28,12 +28,14 @@ class BottomSheet : BottomSheetDialogFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+
         binding.closeIv.setOnClickListener{
             dismiss()
         }
         binding.addBtn.setOnClickListener{
             //Add value with associated place
-            Toast.makeText(activity, "Add btn ", Toast.LENGTH_LONG).show()
+            var axis = viewModel.yAxisPosition.value
+            Toast.makeText(activity, "Add btn "+axis, Toast.LENGTH_LONG).show()
             Log.d("sdssdf","cliekd")
         }
 

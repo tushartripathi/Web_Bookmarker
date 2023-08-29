@@ -13,4 +13,18 @@ object JavaScriptInjection {
         "})();"
 
 
+    fun getJSString(x:Int,y:Int, text:String):String
+    {
+        var str =  "javascript:(function() {"+
+            "var helloDiv = document.createElement('div');"+
+            "helloDiv.innerHTML = '"+text+"';"+
+            "helloDiv.style.position = 'absolute';"+
+            "helloDiv.style.left = '0px';"+
+            "helloDiv.style.top = '"+y+"px';"+
+            "helloDiv.style.color = 'black';"+
+            "document.body.appendChild(helloDiv);"+
+        "})();"
+        return str
+    }
+
 }
