@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.webbookmarker.databinding.FragmentBottomSheetBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
@@ -26,6 +27,15 @@ class BottomSheet : BottomSheetDialogFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        binding.closeIv.setOnClickListener{
+            dismiss()
+        }
+        binding.addBtn.setOnClickListener{
+            //Add value with associated place
+            Toast.makeText(activity, "Add btn ", Toast.LENGTH_LONG).show()
+            Log.d("sdssdf","cliekd")
+        }
 
     }
 

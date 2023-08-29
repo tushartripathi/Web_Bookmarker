@@ -11,9 +11,4 @@ class MainViewModel : ViewModel() {
         longPressHandel.postValue(b)
     }
 
-    fun getLongPressValue(): Boolean?
-    {
-        return longPressHandel.value?:false
-    }
-
 }
