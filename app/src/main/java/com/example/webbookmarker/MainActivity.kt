@@ -3,23 +3,20 @@ package com.example.webbookmarker
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import android.view.ContextMenu
 import android.view.MotionEvent
-import android.view.View
 import android.view.View.OnTouchListener
-import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebView.setWebContentsDebuggingEnabled
 import android.webkit.WebViewClient
-import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.START
-import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.TOP
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.ViewModelProvider
+import androidx.room.Room.databaseBuilder
+import com.example.webbookmarker.Room.AppDatabase
+import com.example.webbookmarker.Room.Notes.NotesEntity
 import com.example.webbookmarker.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,6 +33,14 @@ class MainActivity : AppCompatActivity() {
     val viewModel: MainViewModel by lazy {
         ViewModelProvider(this).get(MainViewModel::class.java)
     }
+    val notesDatabase: AppDatabase by lazy {
+        databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "notes_database"
+        ).build()
+    }
+
+
     var longPressHandled = false
     var yAxisPosition =0
     @SuppressLint("ClickableViewAccessibility")
@@ -73,6 +78,7 @@ class MainActivity : AppCompatActivity() {
             addJavascriptInterface(LongPressJavaScriptInterface(), "Android")
             loadUrl("https://medium.com/@tushartripathi301997/databinding-viewbinding-5f907419c877")
 
+
         }
 
         val viewModelJob = Job()
@@ -89,9 +95,17 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-
         }
 
+        viewModel.notesVlaue.observe(this) { value ->
+           Toast.makeText(this,"notes Value  = "+value , Toast.LENGTH_LONG).show()
+           Toast.makeText(this,"azis y  = "+yAxisPosition , Toast.LENGTH_LONG).show()
+            runBlocking {
+                Log.d("asdfaqwe1","in runblock = "+yAxisPosition)
+                saveValue(yAxisPosition, value)
+            }
+            resetValue()
+        }
 
 
 
@@ -125,8 +139,18 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private suspend fun saveValue(yAxisPosition: Int, value: String?) {
+        val newNote = NotesEntity( notes = value, yAxis = yAxisPosition)
+        Log.d("asdfaqwe1","yAxisPosition = "+yAxisPosition)
+        withContext(Dispatchers.IO) { // Use the IO dispatcher for database operations
+            notesDatabase.noteDao()?.insert(newNote)
+        }
+    }
 
+    private fun resetValue() {
+        yAxisPosition=0;
 
+    }
 
 
     inner class LongPressJavaScriptInterface {

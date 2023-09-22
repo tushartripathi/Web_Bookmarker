@@ -33,17 +33,17 @@ class BottomSheet : BottomSheetDialogFragment() {
             dismiss()
         }
         binding.addBtn.setOnClickListener{
-            //Add value with associated place
-            var axis = viewModel.yAxisPosition.value
-            Toast.makeText(activity, "Add btn "+axis, Toast.LENGTH_LONG).show()
-            Log.d("sdssdf","cliekd")
+
+            if(!binding.noteEt.text.isNullOrEmpty()) {
+                var axis = viewModel.yAxisPosition.value
+                viewModel.setNotesValue(binding.noteEt.text.toString())
+            }
         }
 
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d("sdssfs","onDestroy()")
         viewModel.setLongPressValue(false)
     }
 }
