@@ -62,11 +62,16 @@ dependencies {
 
     implementation("androidx.room:room-ktx:2.5.2")
     kapt("androidx.room:room-compiler:2.5.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
+    implementation("androidx.lifecycle:lifecycle-livedata:2.3.1")
 
     // add below dependency for using lifecycle extensions for room.
 
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
 
+    implementation("androidx.lifecycle:lifecycle-viewmodel:2.6.2")
     annotationProcessor("androidx.lifecycle:lifecycle-compiler:2.6.2")
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
 
 }

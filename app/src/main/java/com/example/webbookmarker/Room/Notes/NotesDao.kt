@@ -15,6 +15,9 @@ interface NoteDao {
     @Query("SELECT * FROM NotesTable WHERE id = :noteId")
     fun getNoteById(noteId: Long): NotesEntity?
 
+    @Query("SELECT * FROM NotesTable Where url = :urlValue") // Query to select all records
+    fun getAllNotes(urlValue :String): List<NotesEntity> //
+
     @Update
     fun update(note: NotesEntity?)
 

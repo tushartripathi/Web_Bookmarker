@@ -1,4 +1,4 @@
-package com.example.webbookmarker
+package com.example.webbookmarker.ui.TakeNote
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -15,9 +15,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room.databaseBuilder
+import com.example.webbookmarker.ui.Fragments.AddNoteBottomSheet
 import com.example.webbookmarker.Room.AppDatabase
+import com.example.webbookmarker.Room.Migration.MigrationPath
 import com.example.webbookmarker.Room.Notes.NotesEntity
+import com.example.webbookmarker.Web.JavaScriptInjection
 import com.example.webbookmarker.databinding.ActivityMainBinding
+import com.example.webbookmarker.ui.Fragments.ReadNoteBottomSheet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -33,13 +37,17 @@ class MainActivity : AppCompatActivity() {
     val viewModel: MainViewModel by lazy {
         ViewModelProvider(this).get(MainViewModel::class.java)
     }
-    val notesDatabase: AppDatabase by lazy {
+    val dbViewModel: NotesViewModel by lazy {
+        ViewModelProvider(this).get(NotesViewModel::class.java)
+    }
+    val appDatabase: AppDatabase by lazy {
         databaseBuilder(
             applicationContext,
             AppDatabase::class.java, "notes_database"
-        ).build()
+        ).addMigrations(MigrationPath.migration1to2).build()
     }
 
+    var url :String? = null
 
     var longPressHandled = false
     var yAxisPosition =0
@@ -51,8 +59,21 @@ class MainActivity : AppCompatActivity() {
 
         val webSettings: WebSettings = binding.mainWebViewId.getSettings()
         webSettings.javaScriptEnabled = true
+        setUrl()
+
+        viewModelOperations()
+
+        binding.mainWebViewId.setOnTouchListener { _, event ->
+            Log.d("asdfasdasdf","event foudn y = ${event.y}")
+            Log.d("asdfasdasdf","event foudn raw y = ${event.rawY}")
+            yAxisPosition = event.rawY.toInt() // Y-coordinate of the touch event
+            false
+
+        }
+
 
         binding.mainWebViewId.apply {
+
             webChromeClient = WebChromeClient()
             setOnTouchListener(OnTouchListener { v, event ->
                 if (event.action == MotionEvent.ACTION_UP && !longPressHandled) {
@@ -60,27 +81,39 @@ class MainActivity : AppCompatActivity() {
                 }
                 false
             })
-            setOnScrollChangeListener { view, x, y, ox, oy ->
-                     yAxisPosition = y;
-            }
-            Log.d("sdsdsdf","hello")
+//            setOnScrollChangeListener { view, x, y, ox, oy ->
+//                     yAxisPosition = y;
+//            }
             webViewClient = object : WebViewClient(){
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
 
-                    //todo remove this
-                    view?.loadUrl(JavaScriptInjection.getJSString(0,200,"this"))
+                    runBlocking {
+                        getViewModelData()
+                    }
 
                 }
             }
             setWebContentsDebuggingEnabled(true)
 
             addJavascriptInterface(LongPressJavaScriptInterface(), "Android")
-            loadUrl("https://medium.com/@tushartripathi301997/databinding-viewbinding-5f907419c877")
-
 
         }
+        url?.let { binding.mainWebViewId.loadUrl(it) }
 
+    }
+
+    private fun setUrl() {
+        url = "https://medium.com/@tushartripathi301997/serializable-and-parcelable-310c93dc8c42"
+    }
+
+    private fun viewModelOperations() {
+        setViewLevelViewModel()
+        setDataViewModels()
+
+    }
+
+    private fun setViewLevelViewModel() {
         val viewModelJob = Job()
         val viewModelScope = CoroutineScope(Dispatchers.Default + viewModelJob)
 
@@ -98,52 +131,36 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.notesVlaue.observe(this) { value ->
-           Toast.makeText(this,"notes Value  = "+value , Toast.LENGTH_LONG).show()
-           Toast.makeText(this,"azis y  = "+yAxisPosition , Toast.LENGTH_LONG).show()
             runBlocking {
-                Log.d("asdfaqwe1","in runblock = "+yAxisPosition)
                 saveValue(yAxisPosition, value)
             }
             resetValue()
         }
 
-
-
-//        val xCoordinate = 100 // X-coordinate in pixels
-//        val yCoordinate = 200 // Y-coordinate in pixels
-//
-//        val textView = TextView(this)
-//        textView.id = View.generateViewId()
-//        textView.text = "Dynamically Positioned TextView"
-//
-//        binding.parentLayout.addView(textView)
-//
-//        // Update the position of the TextView using ConstraintSet
-//        val constraintSet = ConstraintSet()
-//        constraintSet.clone(binding.parentLayout)
-//        constraintSet.connect(
-//            textView.id,
-//            START,
-//            binding.parentLayout.id,
-//            START,
-//            xCoordinate
-//        )
-//        constraintSet.connect(
-//            textView.id,
-//            TOP,
-//            binding.parentLayout.id,
-//            TOP,
-//            yCoordinate
-//        )
-//        constraintSet.applyTo(binding.parentLayout)
-
     }
 
-    private suspend fun saveValue(yAxisPosition: Int, value: String?) {
-        val newNote = NotesEntity( notes = value, yAxis = yAxisPosition)
-        Log.d("asdfaqwe1","yAxisPosition = "+yAxisPosition)
-        withContext(Dispatchers.IO) { // Use the IO dispatcher for database operations
-            notesDatabase.noteDao()?.insert(newNote)
+    private fun setDataViewModels() {
+
+        dbViewModel.notes.observe(this) { value ->
+
+            for (note in value) {
+
+                binding.mainWebViewId.evaluateJavascript(JavaScriptInjection.addNoteBulletJS(0,note.yAxis,note.id)){
+
+                }
+            }
+        }
+    }
+
+    private suspend fun getViewModelData() {
+        url?.let { dbViewModel.getValues(it, appDatabase) }
+    }
+
+    private suspend fun saveValue(yAxisPosition: Int?, value: String?) {
+        val newNote = url?.let { yAxisPosition?.let { it1 -> NotesEntity( notes = value, yAxis = it1, url = it) } }
+        withContext(Dispatchers.IO) {
+            appDatabase.noteDao()?.insert(newNote)
+            getViewModelData()
         }
     }
 
@@ -158,11 +175,20 @@ class MainActivity : AppCompatActivity() {
         fun onLongPress(text: String?) {
             if (!longPressHandled) {
                 longPressHandled = true
+                Log.d("asdfasdasdf","y acus valuye = "+ yAxisPosition)
                 viewModel.setYazis(yAxisPosition)
-                val bottomSheetFragment = BottomSheet()
-                bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
+                val addNoteBottomSheetFragment = AddNoteBottomSheet()
+                addNoteBottomSheetFragment.show(supportFragmentManager, addNoteBottomSheetFragment.tag)
 
             }
+        }
+
+        @JavascriptInterface
+        fun NoteClicked(id:Long)
+        {
+            viewModel.setShowNoteId(id);
+            val readNoteBottomSheetFragment = ReadNoteBottomSheet()
+            readNoteBottomSheetFragment.show(supportFragmentManager, readNoteBottomSheetFragment.tag)
         }
     }
 }

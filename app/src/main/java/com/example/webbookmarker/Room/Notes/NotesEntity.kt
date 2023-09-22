@@ -11,4 +11,5 @@ data class NotesEntity(
     var id: Long =0,
     var notes: String? = null,
     var yAxis: Int ,
+    var url: String?
 )
