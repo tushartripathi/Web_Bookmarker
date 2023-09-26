@@ -1,16 +1,14 @@
-package com.example.webbookmarker
+package com.example.webbookmarker.ui.Fragments
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.example.webbookmarker.databinding.FragmentBottomSheetBinding
+import com.example.webbookmarker.ui.TakeNote.MainActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class BottomSheet : BottomSheetDialogFragment() {
+class AddNoteBottomSheet : BottomSheetDialogFragment() {
 
 
     lateinit var binding : FragmentBottomSheetBinding
@@ -28,20 +26,23 @@ class BottomSheet : BottomSheetDialogFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+
         binding.closeIv.setOnClickListener{
             dismiss()
         }
         binding.addBtn.setOnClickListener{
-            //Add value with associated place
-            Toast.makeText(activity, "Add btn ", Toast.LENGTH_LONG).show()
-            Log.d("sdssdf","cliekd")
+
+            if(!binding.noteEt.text.isNullOrEmpty()) {
+                var axis = viewModel.yAxisPosition.value
+                viewModel.setNotesValue(binding.noteEt.text.toString())
+                dismiss()
+            }
         }
 
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d("sdssfs","onDestroy()")
         viewModel.setLongPressValue(false)
     }
 }
