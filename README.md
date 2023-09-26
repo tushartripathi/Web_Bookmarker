@@ -1,5 +1,5 @@
 # Web Note Maker
-It's a simple app, where you can open a webpage and highlight or make a note for certain paragraph or statement for future reference
+It's a simple app, where you can open a webpage and highlight or make a note for a certain paragraph or statement for future reference
 
 ## Table of Contents
 - [Introduction](#introduction)
@@ -7,7 +7,6 @@ It's a simple app, where you can open a webpage and highlight or make a note for
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
-- [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
@@ -31,11 +30,11 @@ Key features
 2) Open the project in the IDE of your choice
 3) Build and Run 
 
-### Prerequisites
+## Prerequisites
 
 No prerequisites needed
 
-### Contributing
+## Contributing
 
 1. Fork the project.
 2. Create a new branch.
