@@ -35,7 +35,7 @@ Key features
 
 No prerequisites needed
 
-### Contribution
+### Contributing
 
 1. Fork the project.
 2. Create a new branch.
