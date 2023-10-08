@@ -8,12 +8,13 @@ It's a simple app, where you can open a webpage and highlight or make a note for
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
 - [Contributing](#contributing)
+- [Tasks](#tasks)
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
 
 ## Introduction
 
-This is for users who want to go through a lot of web pages and like to make notes about it. Now you can do this simply by tapping on the screen where you want to add a note and just enter your thoughts. The app will store and remember your notes and show you when you need it 
+This is for users who want to go through a lot of web pages and like to make notes about it. Now you can do this simply by tapping on the screen where you want to add a note and just enter your thoughts. The app will store and remember your notes and show you when you need it
 
 ## Features
 
@@ -40,6 +41,11 @@ No prerequisites needed
 2. Create a new branch.
 3. Make your changes.
 4. Submit a pull request.
+
+## Tasks
+
+1. Making the system screen responsive
+2. Integrating CI/CI using GitHub action
 
 
 ## License
