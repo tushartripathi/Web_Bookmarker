@@ -66,7 +66,9 @@ class MainActivity : AppCompatActivity() {
         binding.mainWebViewId.setOnTouchListener { _, event ->
             Log.d("asdfasdasdf","event foudn y = ${event.y}")
             Log.d("asdfasdasdf","event foudn raw y = ${event.rawY}")
+
             yAxisPosition = event.rawY.toInt() // Y-coordinate of the touch event
+            Toast.makeText(this,yAxisPosition,Toast.LENGTH_SHORT).show()
             false
 
         }
@@ -81,9 +83,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 false
             })
-//            setOnScrollChangeListener { view, x, y, ox, oy ->
-//                     yAxisPosition = y;
-//            }
+            setOnScrollChangeListener { view, x, y, ox, oy ->
+                     yAxisPosition = y;
+            }
             webViewClient = object : WebViewClient(){
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
