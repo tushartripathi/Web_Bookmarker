@@ -1,4 +1,4 @@
-# Web Note Maker
+# WebPoint
 
 <img src="https://github.com/tushartripathi/Web_Bookmarker/blob/master/webpont_logo.png?raw=true" alt="My Image" width="300"/>
 
