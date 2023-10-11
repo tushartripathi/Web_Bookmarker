@@ -1,4 +1,7 @@
 # Web Note Maker
+
+<img src="https://github.com/tushartripathi/Web_Bookmarker/blob/master/webpont_logo.png?raw=true" alt="My Image" width="300"/>
+
 It's a simple app, where you can open a webpage and highlight or make a note for a certain paragraph or statement for future reference
 
 ## Table of Contents
