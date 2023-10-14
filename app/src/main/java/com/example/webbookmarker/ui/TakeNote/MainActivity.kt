@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        getIntentValeus()
         val webSettings: WebSettings = binding.mainWebViewId.getSettings()
         webSettings.javaScriptEnabled = true
         setUrl()
@@ -103,6 +103,10 @@ class MainActivity : AppCompatActivity() {
         }
         url?.let { binding.mainWebViewId.loadUrl(it) }
 
+    }
+
+    private fun getIntentValeus() {
+        url = intent.getStringExtra("url")
     }
 
     private fun setUrl() {
