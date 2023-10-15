@@ -56,16 +56,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        getIntentValeus()
         val webSettings: WebSettings = binding.mainWebViewId.getSettings()
         webSettings.javaScriptEnabled = true
-        setUrl()
+        //setUrl()
 
         viewModelOperations()
 
         binding.mainWebViewId.setOnTouchListener { _, event ->
-            Log.d("asdfasdasdf","event foudn y = ${event.y}")
-            Log.d("asdfasdasdf","event foudn raw y = ${event.rawY}")
 
             yAxisPosition = event.rawY.toInt() // Y-coordinate of the touch event
             Toast.makeText(this,yAxisPosition,Toast.LENGTH_SHORT).show()
@@ -89,20 +87,19 @@ class MainActivity : AppCompatActivity() {
             webViewClient = object : WebViewClient(){
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
-
                     runBlocking {
                         getViewModelData()
                     }
-
                 }
             }
             setWebContentsDebuggingEnabled(true)
-
             addJavascriptInterface(LongPressJavaScriptInterface(), "Android")
-
         }
         url?.let { binding.mainWebViewId.loadUrl(it) }
+    }
 
+    private fun getIntentValeus() {
+        url = intent.getStringExtra("url")
     }
 
     private fun setUrl() {
